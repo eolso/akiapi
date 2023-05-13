@@ -78,7 +78,6 @@ type stepInfo struct {
 func SetHttpClient(c *http.Client) {
 	httpClient = c
 	initThemes()
-
 }
 
 func (e element) Name() string {
@@ -86,7 +85,7 @@ func (e element) Name() string {
 }
 
 func (e element) Description() string {
-	return e.Description()
+	return e.EDescription
 }
 
 func (e element) Probability() float64 {
