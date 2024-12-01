@@ -24,12 +24,13 @@ const acceptUrl = "https://en.akinator.com/choice"
 const declineUrl = "https://en.akinator.com/exclude"
 
 type Client struct {
-	step        string
-	progression string
-	signature   string
-	session     string
-	identifier  string
-	question    string
+	step           string
+	progression    string
+	signature      string
+	session        string
+	identifier     string
+	question       string
+	lastAnswerStep string
 
 	answer  Answer
 	history []QuestionAnswer
@@ -179,16 +180,20 @@ func (c *Client) Question() string {
 	return c.question
 }
 
+func (c *Client) Answer() Answer {
+	return c.answer
+}
+
+func (c *Client) Progress() string {
+	return c.progression
+}
+
 func (c *Client) History() []QuestionAnswer {
 	return c.history
 }
 
 func (c *Client) IsAnswered() bool {
 	return len(c.answer.Name) > 0
-}
-
-func (c *Client) Answer() Answer {
-	return c.answer
 }
 
 func (c *Client) AcceptAnswer() error {
@@ -232,6 +237,7 @@ func (c *Client) DeclineAnswer() error {
 	}
 
 	c.step = answer.Step
+	c.lastAnswerStep = answer.Step
 	c.progression = answer.Progression
 	c.question = answer.Question
 	c.answer.Id = ""
@@ -280,7 +286,7 @@ func (c *Client) readGameHtml(r io.Reader) error {
 }
 
 func (c *Client) formatResponseBody(response Response) string {
-	return fmt.Sprintf("step=%s&progression=%s&sid=%s&cm=%t&answer=%s&step_last_proposition=&session=%s&signature=%s", c.step, c.progression, c.theme, c.childMode, response, c.session, c.signature)
+	return fmt.Sprintf("step=%s&progression=%s&sid=%s&cm=%t&answer=%s&step_last_proposition=%s&session=%s&signature=%s", c.step, c.progression, c.theme, c.childMode, response, c.lastAnswerStep, c.session, c.signature)
 }
 
 func (c *Client) formatUndoBody() string {

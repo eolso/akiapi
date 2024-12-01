@@ -7,10 +7,11 @@ type SessionManager interface {
 	UndoResponse() error
 
 	Question() string
+	Answer() Answer
+	Progress() string
 	History() []QuestionAnswer
 
 	IsAnswered() bool
-	Answer() Answer
 	AcceptAnswer() error
 	DeclineAnswer() error
 }
