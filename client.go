@@ -15,13 +15,13 @@ import (
 var stateRegex = regexp.MustCompile(`localStorage.setItem\('([^']*)', '([^']*)'\);`)
 var questionRegex = regexp.MustCompile(`<p[^>]*>([^<]*)</p>`)
 
-const GameUrl = "https://en.akinator.com/game"
+const gameUrl = "https://en.akinator.com/game"
 
-const AnswerUrl = "https://en.akinator.com/answer"
-const UndoUrl = "https://en.akinator.com/cancel_answer"
+const answerUrl = "https://en.akinator.com/answer"
+const undoUrl = "https://en.akinator.com/cancel_answer"
 
-const AcceptUrl = "https://en.akinator.com/choice"
-const DeclineUrl = "https://en.akinator.com/exclude"
+const acceptUrl = "https://en.akinator.com/choice"
+const declineUrl = "https://en.akinator.com/exclude"
 
 type Client struct {
 	step        string
@@ -78,7 +78,7 @@ func (c *Client) SetHttpClient(httpClient *http.Client) {
 
 func (c *Client) NewGame(theme Theme, childMode bool) error {
 	reqBody := strings.NewReader(fmt.Sprintf("sid=%s&cm=%t", theme, childMode))
-	req, err := http.NewRequest("POST", GameUrl, reqBody)
+	req, err := http.NewRequest("POST", gameUrl, reqBody)
 	if err != nil {
 		return fmt.Errorf("failed to build NewGame request: %w", err)
 	}
@@ -101,7 +101,7 @@ func (c *Client) NewGame(theme Theme, childMode bool) error {
 func (c *Client) Respond(response Response) error {
 	questionAnswer := QuestionAnswer{Question: c.question, Answer: response}
 
-	req, err := http.NewRequest("POST", AnswerUrl, strings.NewReader(c.formatResponseBody(response)))
+	req, err := http.NewRequest("POST", answerUrl, strings.NewReader(c.formatResponseBody(response)))
 	if err != nil {
 		return fmt.Errorf("failed to build Respond request: %w", err)
 	}
@@ -144,7 +144,7 @@ func (c *Client) Respond(response Response) error {
 }
 
 func (c *Client) UndoResponse() error {
-	req, err := http.NewRequest("POST", UndoUrl, strings.NewReader(c.formatUndoBody()))
+	req, err := http.NewRequest("POST", undoUrl, strings.NewReader(c.formatUndoBody()))
 	if err != nil {
 		return fmt.Errorf("failed to build Respond request: %w", err)
 	}
@@ -192,7 +192,7 @@ func (c *Client) Answer() Answer {
 }
 
 func (c *Client) AcceptAnswer() error {
-	req, err := http.NewRequest("POST", AcceptUrl, strings.NewReader(c.formatAcceptBody()))
+	req, err := http.NewRequest("POST", acceptUrl, strings.NewReader(c.formatAcceptBody()))
 	if err != nil {
 		return fmt.Errorf("failed to build AcceptAnswer request: %w", err)
 	}
@@ -213,7 +213,7 @@ func (c *Client) AcceptAnswer() error {
 }
 
 func (c *Client) DeclineAnswer() error {
-	req, err := http.NewRequest("POST", DeclineUrl, strings.NewReader(c.formatDeclineBody()))
+	req, err := http.NewRequest("POST", declineUrl, strings.NewReader(c.formatDeclineBody()))
 	if err != nil {
 		return fmt.Errorf("failed to build DeclineAnswer request: %w", err)
 	}
